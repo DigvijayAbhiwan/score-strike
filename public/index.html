@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Click War</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Click War</h1>
+    <h2 id="roomName">Room Name</h2>
+    <div id="main-container">
+      <div id="create-room">
+        <h2>Create Room</h2>
+        <input
+          type="text"
+          id="username-create"
+          placeholder="Enter your username"
+        />
+        <button id="create-room-btn">Create Room</button>
+      </div>
+
+      <div id="join-room">
+        <h2>Join Room</h2>
+        <input type="text" id="room-id" placeholder="Enter room ID" />
+        <input
+          type="text"
+          id="username-join"
+          placeholder="Enter your username"
+        />
+        <button id="join-room-btn">Join Room</button>
+      </div>
+
+      <div id="game" class="hidden">
+        <p id="turn-info"></p>
+        <button id="generate-number-btn">Generate Number</button>
+        <p id="your-score">Your Score: 0</p>
+        <p id="chances-remaining">Remaining Chances: 5</p>
+        <p id="opponent-score">Opponent Score: 0</p>
+        <p id="game-result"></p>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
