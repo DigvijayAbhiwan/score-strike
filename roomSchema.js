@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 const roomSchema = Joi.object({
   roomId: Joi.string().required(),
-  roomName: Joi.string().required(),
+  roomname: Joi.string().required(),
   winner: Joi.string().allow(null),
   currentTurn: Joi.string().required(),
   player1: Joi.object({

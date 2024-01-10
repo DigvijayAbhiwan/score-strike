@@ -27,7 +27,7 @@ const initializeSocket = (server) => {
             roomId: roomId,
             roomname: roomname,
             winner: null,
-            currentTurn: "",
+            currentTurn: socket.id,
             player1: {
               playerId: socket.id,
               name: username,
@@ -56,15 +56,22 @@ const initializeSocket = (server) => {
             socket.join(roomId);
 
             // Setting custom properties on the socket to store username and roomId
+            socket.roomId = roomId;
+            socket.roomname = rooms[roomId].roomname;
             socket.username = username;
-            socket.room = roomId;
-            socket.roomname = rooms[roomId][roomname];
+            socket.currentTurn = "none";
 
             console.log(`${username} created a Room: ${roomId}`);
             console.log(rooms[roomId]);
 
             // Sending a success message back to the user
-            socket.emit("room-created", roomId);
+            socket.emit(
+              "room-created",
+              socket.roomId,
+              socket.roomname,
+              socket.username,
+              socket.currentTurn
+            );
           }
         } else {
           console.log(`Room: ${roomId} already exists.`);
@@ -115,15 +122,22 @@ const initializeSocket = (server) => {
           socket.join(roomId);
 
           // Setting custom properties on the socket to store username and roomId
-          socket.username = username;
-          socket.room = roomId;
+          socket.roomId = roomId;
           socket.roomname = rooms[roomId].roomname;
+          socket.username = username;
+          socket.currentTurn = rooms[roomId].currentTurn;
 
           // Setting the initial turn to player1.playerId
           rooms[roomId].currentTurn = rooms[roomId].player1.playerId;
 
           // Notifying both users in the room about the new player
-          io.to(roomId).emit("player-joined", username, roomId);
+          io.to(roomId).emit(
+            "player-joined",
+            socket.roomId,
+            socket.roomname,
+            socket.username,
+            socket.currentTurn
+          );
 
           console.log(`${username} joined room: ${roomId}`);
           console.log(rooms[roomId]);
@@ -180,7 +194,7 @@ const initializeSocket = (server) => {
     };
 
     socket.on("generate-number", () => {
-      const roomId = socket.room;
+      const roomId = socket.roomId;
       const room = rooms[roomId];
 
       const currentPlayer =
@@ -197,32 +211,40 @@ const initializeSocket = (server) => {
 
         io.to(roomId).emit(
           "update-score",
+          room.player1.playerId,
           room.player1.score,
+          room.player2.playerId,
           room.player2.score
         );
-        io.to(roomId).emit("chances-remaining", currentPlayer.chances);
-        io.to(roomId).emit("generate-number", currentPlayer.name, randomNumber);
+        io.to(roomId).emit(
+          "chances-remaining",
+          currentPlayer.playerId,
+          currentPlayer.chances
+        );
+        io.to(roomId).emit(
+          "number-generated",
+          currentPlayer.name,
+          randomNumber
+        );
       }
 
-      if (currentPlayer.chances === 0) {
-        if (room.player1.chances === 0 && room.player2.chances === 0) {
-          determineWinner(roomId);
-        } else {
-          switchTurn(roomId);
-        }
+      if (room.player1.chances === 0 && room.player2.chances === 0) {
+        determineWinner(roomId);
+      } else {
+        switchTurn(roomId);
       }
     });
 
     socket.on("disconnect", () => {
-      const roomId = socket.room;
+      const roomId = socket.roomId;
 
       if (rooms[roomId]) {
         const room = rooms[roomId];
         if (room.player1 && room.player1.playerId === socket.id) {
-          io.to(roomId).emit("player-disconnect", room.player1.name);
+          io.to(roomId).emit("player-disconnected", room.player1.name);
           delete rooms[roomId];
         } else if (room.player2 && room.player2.playerId === socket.id) {
-          io.to(roomId).emit("player-disconnect", room.player2.name);
+          io.to(roomId).emit("player-disconnected", room.player2.name);
           delete rooms[roomId];
         }
       }

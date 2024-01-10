@@ -18,7 +18,7 @@ body {
 
 #create-room,
 #join-room,
-#game {
+#game-container {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -58,6 +58,11 @@ button {
 
 button:hover {
   background-color: #45a049;
+}
+
+button:disabled {
+  background-color: red;
+  cursor: not-allowed;
 }
 
 #turn-info {

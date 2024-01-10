@@ -3,15 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Click War</title>
+    <title>Score Strike</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
   </head>
   <body>
-    <h1>Click War</h1>
-    <h2 id="roomName">Room Name</h2>
+    <h1>Score Strike</h1>
+    <h2 id="roomname"></h2>
     <div id="main-container">
       <div id="create-room">
         <h2>Create Room</h2>
+        <input type="text" id="room-name-input" placeholder="Enter room name" />
         <input
           type="text"
           id="username-create"
@@ -31,17 +33,17 @@
         <button id="join-room-btn">Join Room</button>
       </div>
 
-      <div id="game" class="hidden">
-        <p id="turn-info"></p>
-        <button id="generate-number-btn">Generate Number</button>
-        <p id="your-score">Your Score: 0</p>
-        <p id="chances-remaining">Remaining Chances: 5</p>
-        <p id="opponent-score">Opponent Score: 0</p>
+      <div id="game-container" class="hidden">
         <p id="game-result"></p>
+        <p><span id="turn-info"></span> 's Turn</p>
+        <p>Your Score: <span id="your-score"></span></p>
+        <p>Remaining Chances: <span id="chances-remaining"></span></p>
+        <p>Opponent Score: <span id="opponent-score"></span></p>
+        <button type="button" id="generate-number-btn" disabled>
+          Generate Number
+        </button>
       </div>
     </div>
-
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
   </body>
 </html>
